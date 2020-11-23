@@ -2,11 +2,10 @@ package logger
 
 import (
 	"go.uber.org/zap"
-	"log"
 )
 
 // TODO настроить логгер
-func LogInit() *zap.Logger {
+func LogInit() (*zap.Logger, error) {
 
 	//encoderCfg := zapcore.EncoderConfig{
 	//	TimeKey:        "TIME",
@@ -26,8 +25,5 @@ func LogInit() *zap.Logger {
 	//logger := zap.New(core)
 
 	logger, err := zap.NewDevelopment()
-	if err != nil {
-		log.Fatal("Не удалось запустить ZAP LOGGER")
-	}
-	return logger
+	return logger, err
 }
