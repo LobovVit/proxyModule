@@ -14,12 +14,12 @@ func init() {
 	//Читаем переменные окружения
 	err := config.InitConfig(&Config)
 	if err != nil {
-		log.Fatalf("Не прочитать переменные окружения %v", err)
+		log.Fatalf("Не удалось прочитать переменные окружения: %v", err)
 	}
 	//запускаем логер
 	Log, err = logger.LogInit()
 	if err != nil {
-		log.Fatalf("Не удалось запустить ZAP LOGGER %v", err)
+		log.Fatalf("Не удалось запустить ZAP LOGGER: %v", err)
 	}
 }
 func main() {
