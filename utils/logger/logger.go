@@ -24,6 +24,6 @@ func LogInit() (*zap.Logger, error) {
 	//core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), os.Stdout, zapcore.DebugLevel)
 	//logger := zap.New(core)
 
-	logger, err := zap.NewDevelopment()
+	logger, err := zap.NewDevelopment() //NewDevelopment()
 	return logger, err
 }

@@ -1,9 +1,10 @@
 package oracle
 
 import (
+	"context"
 	"database/sql"
-	"fmt"
 	_ "github.com/godror/godror"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -11,30 +12,25 @@ import (
 //https://oracle.github.io/odpi/doc/installation.html#id3
 //ln -s /opt/oracle/instantclient_19_8/libclntsh.dylib /usr/local/lib/
 
-func TestCon() (*sql.DB, error) {
-	db, err := sql.Open("godror", "apps/apps@eb-arp-dev-fah.otr.ru:1529/fah")
+func InitConn(Log *zap.Logger, dsn string) (connect *sql.DB, err error) {
+	db, err := sql.Open("godror", dsn)
 	if err != nil {
-		fmt.Println(err)
+		Log.Error("Не удалось создать подключение к БД", zap.String("dsn:", dsn), zap.Error(err))
 		return nil, err
 	}
 	db.SetMaxOpenConns(25)
 	db.SetMaxIdleConns(25)
 	db.SetConnMaxLifetime(5 * time.Minute)
-	//defer db.Close()
 
-	rows, err := db.Query("select doc_guid from XXT_BS_DOC_REGISTRY where rownum = 1")
-	if err != nil {
-		fmt.Println("Error running query")
-		fmt.Println(err)
+	var ctx context.Context
+	ctx = context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	if err := db.PingContext(ctx); err != nil {
+		Log.Error("Не удалось проверить подключение к БД", zap.String("dsn:", dsn), zap.Error(err))
 		return nil, err
 	}
-	defer rows.Close()
 
-	var thedate string
-	for rows.Next() {
-
-		rows.Scan(&thedate)
-	}
-	fmt.Printf("The date is: %s\n", thedate)
 	return db, nil
 }

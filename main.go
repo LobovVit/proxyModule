@@ -26,20 +26,7 @@ func init() {
 func main() {
 
 	Log.Info("Play")
-	Log.Info("Play", zap.Bool("DEBUG", Config.DEBUG))
-	Log.Info("Play", zap.Int("DB_PORT", Config.DB_PORT))
 	//Подключаемся к БД
-	db, err := oracle.TestCon()
-	if err != nil {
-		Log.Info("Не удалось запустить подключится к БД")
-	}
-	err = db.Ping()
-	if err != nil {
-		Log.Info("Не удалось проверить подключится к БД", zap.Any("err", err))
-	}
-	if err == nil {
-		Log.Info("Подключились к БД")
-	}
-	//Начинаем слушать входящие
+	oracle.InitConn(Log, Config.FAH_CONN_STRING)
 
 }
