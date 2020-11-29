@@ -6,7 +6,7 @@ COPY proxyModule.go ./
 RUN go build -o proxyModule .
 CMD ["/app/proxyModule"]
 
-FROM alpine:latest as my_im
+FROM alpine:latest as proxyModule
 # Setup LD lib path
 ENV LD_LIBRARY_PATH=/lib
 # Install Apline dependencies
