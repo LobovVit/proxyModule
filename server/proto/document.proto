@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+service loadDocService {
+  rpc LoadDoc(Document) returns (Response);
+}
+
+service ReserveFundsService {
+  rpc ReserveFunds(Events) returns (Response);
+}
+
+service MarkJournalService {
+  rpc MarkJournal(Events) returns (Response);
+}
+
+service ClearEventService {
+  rpc ClearEvent(Events) returns (Response);
+}
+
+message Document {
+    documentCard card = 1;
+    documentHeader Header = 2;
+    repeated documentLine lines = 3;
+}
+
+message Response {
+    enum retState{
+      E = 0; //ERROR
+      W = 1; //WARNING
+      S = 2; //SUCCESS
+      Z = 3; //0 journals created
+    }
+    retState returnStatus = 1;
+    string returnMessage = 2;
+    repeated errMessage errorMessage = 3;
+}
+
+message Events {
+    repeated Event events = 1;
+}
+
+message documentCard {
+
+}
+
+message documentHeader {
+
+}
+
+message documentLine {
+
+}
+
+message Event {
+
+}
+
+message errMessage {
+
+}
