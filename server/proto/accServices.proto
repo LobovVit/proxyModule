@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package accServices;
+
 service loadDocService {
   rpc LoadDoc(Document) returns (Response);
 }
