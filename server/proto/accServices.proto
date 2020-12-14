@@ -7,10 +7,14 @@ syntax = "proto3";
 //      2-3 раза reserveFundsService
 //      1 раз markJournalService
 //      0,1 раз clearEventService (каждый десятый документ отменяется)
-//      2-3 раза getAccountingRecord
+//      0,3 раза reversFundsService (каждый третий документ сторнируется)
+//      2-3 раза getAccRecordService
 package accServices;
 
+
+//типы для проекта
 import "types.proto";
+
 //-------------SERVICE-----------------------------------
 //передача документа (данных для подбора проводок)
 service loadDocService {
@@ -25,6 +29,11 @@ service reserveFundsService {
 //подтверждение даных по событию учета
 service markJournalService {
   rpc MarkJournal(Events) returns (Response);
+}
+//-------------SERVICE-----------------------------------
+//сторнирование данных по событию учета
+service reversFundsService {
+  rpc ClearEvent(Events) returns (Response);
 }
 //-------------SERVICE-----------------------------------
 //удаление данных по событию учета
@@ -65,19 +74,16 @@ message documentCard {
   string  baseNum = 8; //номер документа основания (дополнительный документ)
   string  baseType = 9; //тип документа основания (дополнительный документ)
 
-  types.timestamp creationDate =10; //дата и время создания документа
-  string  createdBy =11; //идентификатор создателя
-  types.timestamp   lastUpdDate =12; //дата и время последненго изменения
-  string   lastUpdBy =13; //идентификатор последнего изменившего
+  string   orgFrom   =10; //организация отправитель
+  string   orgTo     =11; //организация получатель
+  string   tofkFrom   =12; //ТоФК отправитель
+  string   tofTo     =13; //ТоФК получатель
+  string   paFrom     =14; //ЛС отправитель
+  string   paTo     =15; //ЛС получатель
+  string   budgetFrom  =16; //бюджет отправитель
+  string   budgetTo   =17; //бюджет получатель
 
-  string   orgFrom   =14; //организация отправитель
-  string   orgTo     =15; //организация получатель
-  string   paFrom     =16; //ЛС отправитель
-  string   paTo     =17; //ЛС получатель
-  string   budgetFrom  =18; //бюджет отправитель
-  string   budgetTo   =19; //бюджет получатель
-
-  string   currencyCode =20; //код валюты (RUB / USD / EUR / BUR ...)
+  string   currencyCode =18; //код валюты (RUB / USD / EUR / BUR ...)
 }
 //-------------MESSAGE_AS_TYPE---------------------------
 message documentHeader {
@@ -123,10 +129,28 @@ message attributes {
 }
 //-------------MESSAGE_AS_TYPE---------------------------
 message event {
-
+  types.UUID docGuid  = 1; //гуид документа
+  types.UUID eventGuid  = 2; //гуид события  (ключ идемпотентности)
+  string evenCode = 3; //код события учета
+  string tofkCode =4; //код тофк - инициатора события
+  string orgCode  =5; //код организации - инициатора события (пока не используется)
+  string user  =6; //пользователь - инициатор события
+  types.date eventDate =7;
+  types.date transactionDate = 8;
+  bool  budgetControl = 9;
 }
 //-------------MESSAGE_AS_TYPE---------------------------
 message errMessage {
-
+  types.UUID docGuid  = 1; //гуид документа
+  types.UUID eventGuid  = 2; //гуид события
+  enum recTypes{
+    TECH_DATA = 0; //Тех инфо - для службы сопровождения
+    ERRORS = 1; //ошибка
+    WARNING = 2; //предупреждение
+    INFO = 3; //Информация
+  }
+  recTypes recordType = 3; // секция лога
+  string recordBody =4; //Детальное описание причины отказа (текст)
+  string rejectCode =5; //(коды ошибок по номенклвтуре ФК)
 }
 
