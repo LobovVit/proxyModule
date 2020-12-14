@@ -25,7 +25,6 @@ func init() {
 	}
 }
 func main() {
-
 	Log.Info("Play")
 	//Подключаемся к БД
 	oracle.InitConn(Log, Config.FAH_CONN_STRING)

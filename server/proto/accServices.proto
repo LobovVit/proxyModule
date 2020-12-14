@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package accServices;
 
+import "google/protobuf/timestamp.proto";
+import "proxymodule/server/proto/types.proto";
+import "types.proto";
+
 service loadDocService {
   rpc LoadDoc(Document) returns (Response);
 }
@@ -41,15 +45,64 @@ message Events {
 }
 
 message documentCard {
+  string source  = 1;
 
+  UUID guid  =2;
+  date date  = 3;
+  string num   = 4;
+  string type  = 5;
+
+  UUID  BaseGuid  = 6;
+  date   BaseDate = 7;
+  string  BaseNum = 8;
+  string  BaseType = 9;
+
+  google.protobuf.Timestamp CreationDate =10;
+  string  CreatedBy =11;
+  google.protobuf.Timestamp   LastUpdDate =12;
+  string   LastUpdBy =13;
+
+  string   OrgFrom   =14;
+  string   OrgTo     =15;
+  string   PaFrom     =16;
+  string    PaTo     =17;
+  string   BudgetFrom  =18;
+  string   BudgetTo   =19;
+
+  string   CurrencyCode =20;
 }
 
 message documentHeader {
-
+  string HAttribute1 =1;
+  string HAttribute2  =2;
+  string HAttribute3  =3;
+  string HAttribute4  =4;
+  string HAttribute5  =5;
+  string HAttribute6  =6;
+  string HAttribute7  =7;
+  string HAttribute8  =8;
+  string HAttribute9  =9;
+  string HAttribute10 =10;
 }
 
 message documentLine {
+  decimal LEnteredAmount1  = 1;
+  decimal lAccountedAmount1 = 2;
+  decimal LEnteredAmount2  = 3;
+  decimal lAccountedAmount2 = 4;
+  decimal LEnteredAmount3  = 5;
+  decimal lAccountedAmount3 = 6;
 
+  string LAttribute1  =7;
+  string LAttribute2  =8;
+  string LAttribute3  =9;
+  string LAttribute4  =10;
+  string LAttribute5  =11;
+  string LAttribute6  =12;
+  string LAttribute7  =13;
+  string LAttribute8 =14;
+  string LAttribute9  =15;
+  string LAttribute10 =16;
 }
 
 message Event {
@@ -59,3 +112,4 @@ message Event {
 message errMessage {
 
 }
+
