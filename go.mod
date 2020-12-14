@@ -9,5 +9,6 @@ require (
 	github.com/shopspring/decimal v1.2.0
 	github.com/tomazk/envcfg v0.0.0-20170619155318-23e3618f1e33
 	go.uber.org/zap v1.16.0
+	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )

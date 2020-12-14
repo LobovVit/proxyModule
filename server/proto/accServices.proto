@@ -1,114 +1,131 @@
 syntax = "proto3";
 
+//пакет сервисов работающих с подсистемой учета
+//показатели назначения - 400-500 обрабатываемых документов в секунду
+// -  обрабатываемый документ это:
+//      1 раз  loadDocService
+//      2-3 раза reserveFundsService
+//      1 раз markJournalService
+//      0,1 раз clearEventService (каждый десятый документ отменяется)
+//      2-3 раза getAccountingRecord
 package accServices;
 
-import "google/protobuf/timestamp.proto";
-import "proxymodule/server/proto/types.proto";
 import "types.proto";
-
+//-------------SERVICE-----------------------------------
+//передача документа (данных для подбора проводок)
 service loadDocService {
   rpc LoadDoc(Document) returns (Response);
 }
-
-service ReserveFundsService {
+//-------------SERVICE-----------------------------------
+//вызов события учета
+service reserveFundsService {
   rpc ReserveFunds(Events) returns (Response);
 }
-
-service MarkJournalService {
+//-------------SERVICE-----------------------------------
+//подтверждение даных по событию учета
+service markJournalService {
   rpc MarkJournal(Events) returns (Response);
 }
-
-service ClearEventService {
+//-------------SERVICE-----------------------------------
+//удаление данных по событию учета
+service clearEventService {
   rpc ClearEvent(Events) returns (Response);
 }
-
+//-------------MESSAGE_FOR_SERVICE-----------------------
+//документ (данные для подбора проводок)
 message Document {
-    documentCard card = 1;
-    documentHeader Header = 2;
-    repeated documentLine lines = 3;
+    documentCard card = 1; //карточка документа ( общие атрибуты всех документов)
+    documentHeader header = 2; //Заголовок документа (атрибуты присущие данному типу документа)
+    repeated documentLine lines = 3; //Строки (множественный блок аттрибутов присущих только этому типу документов)
 }
-
+//-------------MESSAGE_FOR_SERVICE-----------------------
+//ответ сервисов
 message Response {
-    enum retState{
-      E = 0; //ERROR
-      W = 1; //WARNING
-      S = 2; //SUCCESS
-      Z = 3; //0 journals created
-    }
-    retState returnStatus = 1;
-    string returnMessage = 2;
-    repeated errMessage errorMessage = 3;
+    types.retState returnStatus = 1; //статус ответа (успешный/не успешный)
+    string returnMessage = 2; //Сообщение ответа текстовое (краткое сообщение если требуется)
+    repeated errMessage errorMessage = 3; //подробный отчет об ошибках или предупреждениях
 }
-
+//-------------MESSAGE_FOR_SERVICE-----------------------
+//события учета
 message Events {
-    repeated Event events = 1;
+    repeated event events = 1;  //события учета (чаще одно необходимое)
 }
-
+//-------------MESSAGE_AS_TYPE---------------------------
+//карточка документа
 message documentCard {
-  string source  = 1;
+  string source  = 1; //код подсистемы источника документов (EXP / IMP / FAMABS / FAM)
 
-  UUID guid  =2;
-  date date  = 3;
-  string num   = 4;
-  string type  = 5;
+  types.UUID guid  = 2; //гуид документа  (основной идентификатор)
+  types.date date = 3; //дата документа
+  string num  = 4; //номер документа
+  string type  = 5; //тип документа
 
-  UUID  BaseGuid  = 6;
-  date   BaseDate = 7;
-  string  BaseNum = 8;
-  string  BaseType = 9;
+  types.UUID  baseGuid  = 6; //гуид документа основания (дополнительный документ)
+  types.date   baseDate = 7; //дата документа основания (дополнительный документ)
+  string  baseNum = 8; //номер документа основания (дополнительный документ)
+  string  baseType = 9; //тип документа основания (дополнительный документ)
 
-  google.protobuf.Timestamp CreationDate =10;
-  string  CreatedBy =11;
-  google.protobuf.Timestamp   LastUpdDate =12;
-  string   LastUpdBy =13;
+  types.timestamp creationDate =10; //дата и время создания документа
+  string  createdBy =11; //идентификатор создателя
+  types.timestamp   lastUpdDate =12; //дата и время последненго изменения
+  string   lastUpdBy =13; //идентификатор последнего изменившего
 
-  string   OrgFrom   =14;
-  string   OrgTo     =15;
-  string   PaFrom     =16;
-  string    PaTo     =17;
-  string   BudgetFrom  =18;
-  string   BudgetTo   =19;
+  string   orgFrom   =14; //организация отправитель
+  string   orgTo     =15; //организация получатель
+  string   paFrom     =16; //ЛС отправитель
+  string   paTo     =17; //ЛС получатель
+  string   budgetFrom  =18; //бюджет отправитель
+  string   budgetTo   =19; //бюджет получатель
 
-  string   CurrencyCode =20;
+  string   currencyCode =20; //код валюты (RUB / USD / EUR / BUR ...)
 }
-
+//-------------MESSAGE_AS_TYPE---------------------------
 message documentHeader {
-  string HAttribute1 =1;
-  string HAttribute2  =2;
-  string HAttribute3  =3;
-  string HAttribute4  =4;
-  string HAttribute5  =5;
-  string HAttribute6  =6;
-  string HAttribute7  =7;
-  string HAttribute8  =8;
-  string HAttribute9  =9;
-  string HAttribute10 =10;
+  attributes senderAttributes = 1; //доп арртибуты отправителя
+  attributes receiverAttributes = 2; //доп арртибуты получателя
 }
-
+//-------------MESSAGE_AS_TYPE---------------------------
 message documentLine {
-  decimal LEnteredAmount1  = 1;
-  decimal lAccountedAmount1 = 2;
-  decimal LEnteredAmount2  = 3;
-  decimal lAccountedAmount2 = 4;
-  decimal LEnteredAmount3  = 5;
-  decimal lAccountedAmount3 = 6;
+  types.decimal lEnteredAmount1  = 1; //Сымма введенная 1 в валюте документа
+  types.decimal lAccountedAmount1 = 2; //Сымма учтенная 1 в ркблях
+  types.decimal lEnteredAmount2  = 3; //Сымма введенная 2 в валюте документа
+  types.decimal lAccountedAmount2 = 4; //Сымма учтенная 2 в ркблях
+  types.decimal lEnteredAmount3  = 5; //Сымма введенная 3 в валюте документа
+  types.decimal lAccountedAmount3 = 6; //Сымма учтенная 3 в ркблях
 
-  string LAttribute1  =7;
-  string LAttribute2  =8;
-  string LAttribute3  =9;
-  string LAttribute4  =10;
-  string LAttribute5  =11;
-  string LAttribute6  =12;
-  string LAttribute7  =13;
-  string LAttribute8 =14;
-  string LAttribute9  =15;
-  string LAttribute10 =16;
+  budgetCodes senderCodes = 7; //аналитика по стороне отправителя
+  budgetCodes receiverCodes  = 8; //аналитика по стороне получателя
+
+  attributes senderAttributes = 9; //доп арртибуты отправителя
+  attributes receiverAttributes = 10; //доп арртибуты получателя
 }
-
-message Event {
+//-------------MESSAGE_AS_TYPE---------------------------
+message budgetCodes {
+  string foundSourceCode = 1; //источник средств
+  string bccCode = 2; //Код КБК (20 символов)
+  string bccType = 3; //тип КБК (3 символа)
+  string faipCode = 4; //код ФАИП
+  string kmiCode = 5; //код КМИ
+  string subsidyTargetCode = 6;//код цели
+}
+//-------------MESSAGE_AS_TYPE---------------------------
+message attributes {
+  string attribute1  =1;  //доп арртибут
+  string attribute2  =2;  //доп арртибут
+  string attribute3  =3;  //доп арртибут
+  string attribute4  =4;  //доп арртибут
+  string attribute5  =5;  //доп арртибут
+  string attribute6  =6;  //доп арртибут
+  string attribute7  =7;  //доп арртибут
+  string attribute8  =8;  //доп арртибут
+  string attribute9  =9;  //доп арртибут
+  string attribute10 =10; //доп арртибут
+}
+//-------------MESSAGE_AS_TYPE---------------------------
+message event {
 
 }
-
+//-------------MESSAGE_AS_TYPE---------------------------
 message errMessage {
 
 }
