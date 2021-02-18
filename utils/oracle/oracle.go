@@ -30,6 +30,8 @@ func InitConn(Log *zap.Logger, dsn string) (connect *sql.DB, err error) {
 	if err := db.PingContext(ctx); err != nil {
 		Log.Error("Не удалось проверить подключение к БД", zap.String("dsn:", dsn), zap.Error(err))
 		return nil, err
+	} else {
+		Log.Info("Ping OK", zap.String("dsn:", dsn))
 	}
 
 	return db, nil

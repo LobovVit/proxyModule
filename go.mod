@@ -3,6 +3,7 @@ module proxymodule
 go 1.15
 
 require (
+	bitbucket.org/LobovVit/proto v0.0.0-20201214110205-feca4edb66fb // indirect
 	github.com/godror/godror v0.20.9
 	github.com/google/uuid v1.1.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
