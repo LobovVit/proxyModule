@@ -28,7 +28,7 @@ func (conf *Cfg) InitConfig() error {
 		conf.FAH_CONN_STRING = "apps/apps@eb-arp-dev-fah.otr.ru:1529/fah"
 	}
 	if conf.PORT == "" {
-		conf.PORT = ":80"
+		conf.PORT = ":8080"
 	}
 	if conf.LOGLEVEL == "" {
 		conf.LOGLEVEL = "DEBUG"
@@ -40,11 +40,13 @@ func (conf *Cfg) InitConfig() error {
 		conf.TARANTOOL_HOST = "TARANTOOL_HOST"
 	}
 	//Вывод конфигурации
-	fmt.Printf("конфигурация :\n")
-	fmt.Printf("LOGLEVEL : %v\n", conf.LOGLEVEL)
-	fmt.Printf("HOST:PORT : %v\n", conf.HOST+conf.PORT)
-	fmt.Printf("FAH_CONN_STRING : %v\n", conf.FAH_CONN_STRING)
-	fmt.Printf("TARANTOOL : %v\n", conf.TARANTOOL_HOST+conf.TARANTOOL_PORT)
+	fmt.Printf("-----------------------------------\n")
+	fmt.Printf("-----------конфигурация------------\n")
+	fmt.Printf("   LOGLEVEL : %v\n", conf.LOGLEVEL)
+	fmt.Printf("   HOST:PORT : %v\n", conf.HOST+conf.PORT)
+	fmt.Printf("   FAH_CONN_STRING : %v\n", conf.FAH_CONN_STRING)
+	fmt.Printf("   TARANTOOL : %v\n", conf.TARANTOOL_HOST+conf.TARANTOOL_PORT)
+	fmt.Printf("-----------------------------------\n")
 
 	return nil
 }
@@ -71,9 +73,11 @@ func (conf *Cfg) ReInitConfig() {
 		conf.TARANTOOL_HOST = "TARANTOOL_HOST"
 	}
 	//Вывод конфигурации
-	fmt.Printf("конфигурация :\n")
-	fmt.Printf("LOGLEVEL : %v\n", conf.LOGLEVEL)
-	fmt.Printf("HOST:PORT : %v\n", conf.HOST+conf.PORT)
-	fmt.Printf("FAH_CONN_STRING : %v\n", conf.FAH_CONN_STRING)
-	fmt.Printf("TARANTOOL : %v\n", conf.TARANTOOL_HOST+conf.TARANTOOL_PORT)
+	fmt.Printf("-----------------------------------\n")
+	fmt.Printf("-----------конфигурация------------\n")
+	fmt.Printf("   LOGLEVEL : %v\n", conf.LOGLEVEL)
+	fmt.Printf("   HOST:PORT : %v\n", conf.HOST+conf.PORT)
+	fmt.Printf("   FAH_CONN_STRING : %v\n", conf.FAH_CONN_STRING)
+	fmt.Printf("   TARANTOOL : %v\n", conf.TARANTOOL_HOST+conf.TARANTOOL_PORT)
+	fmt.Printf("-----------------------------------\n")
 }
