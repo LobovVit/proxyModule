@@ -5,7 +5,7 @@ import (
 	"proxymodule/utils/config"
 )
 
-func GrpcStart(log *zap.Logger, Config config.Cfg) {
+func GrpcStart(log *zap.Logger, Config *config.Cfg) {
 
 	log.Info("GrpcStart", zap.String("key", "val"))
 }
